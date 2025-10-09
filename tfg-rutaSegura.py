@@ -106,13 +106,45 @@ ruta = nx.shortest_path(
 coords = [(G.nodes[n]["y"], G.nodes[n]["x"]) for n in ruta]
 
 
-# Creamos un mapa con Folium y añadimos los puntos de origen y destino y la ruta segura
+# Creamos un mapa con Folium
 m = folium.Map(location=coords[0], zoom_start=15, tiles="cartodbpositron")
 folium.Marker(coords[0], tooltip="Origen", icon=folium.Icon(color="green")).add_to(m)
 folium.Marker(coords[-1], tooltip="Destino", icon=folium.Icon(color="red")).add_to(m)
-folium.PolyLine(coords, color="blue", weight=5, opacity=0.8).add_to(m)
 
 
-# Guardamos el mapa como html
+# Dibujamos la ruta tramo a tramo con tooltip
+for i in range(len(ruta) - 1):
+    u, v = ruta[i], ruta[i + 1]
+    # Recuperamos coordenadas de los nodos
+    punto1 = (G.nodes[u]["y"], G.nodes[u]["x"])
+    punto2 = (G.nodes[v]["y"], G.nodes[v]["x"])
+    coords_tramo = [punto1, punto2]
+
+    # Recuperamos datos de seguridad y distancia
+    datos = G[u][v]
+    seguridad = datos.get("seguridad", [0, 0, 0, 0, 0])
+    distancia = datos.get("length", 0)
+
+    # Creamos texto del tooltip
+    tooltip_text = f"""
+    <b>Distancia:</b> {distancia:.1f} m<br>
+    <b>Luminosidad:</b> {seguridad[0]}<br>
+    <b>Cámaras:</b> {seguridad[1]}<br>
+    <b>Contenedores:</b> {seguridad[2]}<br>
+    <b>Robos:</b> {seguridad[3]}<br>
+    <b>Peatones:</b> {seguridad[4]}
+    """
+
+    # Añadimos PolyLine con tooltip
+    folium.PolyLine(
+        coords_tramo,
+        color="blue",
+        weight=5,
+        opacity=0.8,
+        tooltip=folium.Tooltip(tooltip_text, sticky=True)  # sticky=True hace que siga el cursor
+    ).add_to(m)
+
+
+# Guardamos el mapa
 m.save("ruta_segura.html")
 print("Mapa guardado en ruta_segura.html — Ábrelo en tu navegador")
