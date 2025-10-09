@@ -64,14 +64,14 @@ destino_nodo = insertar_nodo_en_calle(G, destino_input)
 G = nx.Graph(G)
 
 
-# Asignamos valores aleatorios de seguridad a nuestras calles (aristas)
+# Asignamos valores aleatorios de seguridad a nuestras calles (aristas), 0 significa desconocido
 for u, v, datos in G.edges(data=True):
     datos["seguridad"] = [
-        random.randint(1, 5),  # luminosidad
-        random.randint(1, 5),  # camaras
-        random.randint(1, 5),  # contenedores
-        random.randint(1, 5),  # robos
-        random.randint(1, 5)   # peatones
+        random.randint(0, 5),  # luminosidad
+        random.randint(0, 5),  # camaras
+        random.randint(0, 5),  # contenedores
+        random.randint(0, 5),  # robos
+        random.randint(0, 5)   # peatones
     ]
 
 
@@ -80,16 +80,16 @@ def calcular_coste(u, v, datos, pesos=(1, 2, 1, 3, 2), k=100):
     distancia = datos.get("length", 1)
     seguridad = datos.get("seguridad", [3, 3, 3, 3, 3])
 
-    lum, cam, cont, rob, peat = seguridad
-    a, b, c, d, e = pesos
+    # Filtramos elementos con valor 0 (desconocido)
+    seguridad_filtrada = [(valor, peso, i) for i, (valor, peso) in enumerate(zip(seguridad, pesos)) if valor != 0]
 
-    score = (
-        a * (1 - lum / 5) +
-        b * (1 - cam / 5) +
-        c * (cont / 5) +
-        d * (rob / 5) +
-        e * (1 - peat / 5)
-    )
+    score = 0
+    for valor, peso, i in seguridad_filtrada:
+        if i in [0, 1, 4]:  # lum, cam, peat → mayor valor = más seguro
+            score += peso * (1 - valor / 5)
+        elif i in [2, 3]:  # contenedores, robos → mayor valor = menos seguro
+            score += peso * (valor / 5)
+
     return distancia + k * score
 
 
