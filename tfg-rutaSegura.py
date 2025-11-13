@@ -1,5 +1,3 @@
-# ! Hay que instalar scikit con py -m pip install scikit-learn
-
 import osmnx as ox
 import networkx as nx
 import folium
@@ -51,7 +49,7 @@ def insertar_nodo_en_calle(G, punto_latlon):
     return nuevo_nodo
 
 
-# Definimos las coordenadas para el origen y el destino de nuestra ruta (mas adelante recibira Strings de direcciones)
+# Definimos las coordenadas para el origen y el destino de nuestra ruta (más adelante recibirá Strings de direcciones)
 origen_input = (40.41023231741949, -3.7047604321897616)
 destino_input = (40.40139553653678, -3.6908766039851235)
 
