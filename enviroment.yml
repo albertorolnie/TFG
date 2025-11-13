@@ -1,0 +1,24 @@
+name: tfg-rutaSegura
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Versión de Python
+  - python=3.14
+
+  # Librerías principales (osmnx y sus dependencias)
+  - osmnx
+  - networkx
+  - folium
+  - shapely
+
+  # Scikit-learn (sklearn)
+  - scikit-learn
+
+  # Librerías comunes usadas por las anteriores
+  - pandas
+  - numpy
+  - pip
+
+  # Librería estándar que no necesita instalación, pero se incluye por contexto
+  # - random # No es necesario incluir librerías estándar de Python
