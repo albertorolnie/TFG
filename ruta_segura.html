@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_21563474a97a1b3c925c75766b1be2c4 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div id="info-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; font-family: Arial, sans-serif;">
+        <!-- Panel de Información (Oculto por defecto) -->
+        <div id="info-panel" style="display: none; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); margin-bottom: 15px; max-width: 350px; border: 1px solid #ddd;">
+            
+    <div style='font-family: Arial, sans-serif; max-width: 350px;'>
+        <h3 style='color: #2c3e50;'>📊 Comparativa de Rutas</h3>
+        <hr style='border: 1px solid #bdc3c7;'>
+
+        <h4>Ruta Más Corta (Naranja)</h4>
+        <ul>
+            <li>📏 Distancia Total = <b style='color: orange;'>1809.1 m</b></li>
+            <li>⚖️ Score Seguridad por 100m = <b style='color: orange;'>42.924</b></li>
+        </ul>
+
+        <h4>Ruta Más Segura (Morado)</h4>
+        <ul>
+            <li>📏 Distancia Total = <b style='color: #6600d3;'>1859.1 m</b></li>
+            <li>⚖️ Score Seguridad por 100m = <b style='color: #6600d3;'>32.858</b></li>
+        </ul>
+
+        <hr style='border: 1px solid #bdc3c7;'>
+
+        <h4>Comparativa de Distancia</h4>
+        <p>
+            La Ruta Segura es <b style='color: green;'>
+            2.77%</b> más larga que la Ruta Corta.
+        </p>
+        <p style='font-size: 0.8em; color: #7f8c8d;'>
+            * Score Seguridad por 100m: Cuanto menor sea el valor, más segura es la ruta.
+            (Penalización k=100)
+        </p>
+    </div>
+    
+        </div>
+        
+        <!-- Botón de Imagen -->
+        <img id="info-btn" src="assets/button_icon.png" 
+             style="width: 150px; height: auto; cursor: pointer; transition: transform 0.2s; display: block;" 
+             onclick="toggleInfo()"
+             onmouseover="this.style.transform='scale(1.1)'"
+             onmouseout="this.style.transform='scale(1.0)'"
+             title="Ver Resumen de Rutas">
+    </div>
+
+    <script>
+        function toggleInfo() {
+            var panel = document.getElementById('info-panel');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+    </script>
+    
+    
+            <div class="folium-map" id="map_21563474a97a1b3c925c75766b1be2c4" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_21563474a97a1b3c925c75766b1be2c4 = L.map(
+                "map_21563474a97a1b3c925c75766b1be2c4",
+                {
+                    center: [40.41023011475073, -3.704759679236665],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 15,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_cffa190ce601155e0559f3608bf48dca = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_cffa190ce601155e0559f3608bf48dca.addTo(map_21563474a97a1b3c925c75766b1be2c4);
+        
+    
+            var circle_marker_7a4074b979a53feeaa5515c259929b64 = L.circleMarker(
+                [40.41023011475073, -3.704759679236665],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#6600d3", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_21563474a97a1b3c925c75766b1be2c4);
+        
+    
+            circle_marker_7a4074b979a53feeaa5515c259929b64.bindTooltip(
+                `<div>
+                     Origen
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_38010322a321377ef882c457fcb187b7 = L.marker(
+                [40.40140021308012, -3.6909252295070902],
+                {
+}
+            ).addTo(map_21563474a97a1b3c925c75766b1be2c4);
+        
+    
+            var icon_f8222de9c4c34a6f68827534ac828d1f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "flag-checkered",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+            marker_38010322a321377ef882c457fcb187b7.bindTooltip(
+                `<div>
+                     Destino
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_38010322a321377ef882c457fcb187b7.setIcon(icon_f8222de9c4c34a6f68827534ac828d1f);
+            
+    
+            var feature_group_703e2051a61611397d775731069f21c2 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var poly_line_cb39666c5df98bbcd6b38965a35090f8 = L.polyline(
+                [[40.41023011475073, -3.704759679236665], [40.4103437, -3.7044274]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_cb39666c5df98bbcd6b38965a35090f8.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 30.8 m<br>
+    <b>Score Penalización (k=100):</b> 0.5625<br>
+    <b>Coste Total (Distancia + Penalización):</b> 87.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_35f8969487a59747b1f07d181050b9f4 = L.polyline(
+                [[40.4103437, -3.7044274], [40.4099584, -3.7041963]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_35f8969487a59747b1f07d181050b9f4.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 47.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.0312<br>
+    <b>Coste Total (Distancia + Penalización):</b> 50.2<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_52c990e5e3c9cc0c27ae2647a599153c = L.polyline(
+                [[40.4099584, -3.7041963], [40.409787, -3.7040926]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_52c990e5e3c9cc0c27ae2647a599153c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 21.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.0083<br>
+    <b>Coste Total (Distancia + Penalización):</b> 21.8<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_92b794e621c873972953764bbbe048e1 = L.polyline(
+                [[40.409787, -3.7040926], [40.4095576, -3.7039546]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_92b794e621c873972953764bbbe048e1.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 28.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.4031<br>
+    <b>Coste Total (Distancia + Penalización):</b> 68.4<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_efd2b3cd4b6948646682fa654b3367df = L.polyline(
+                [[40.4095576, -3.7039546], [40.4087094, -3.703393]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_efd2b3cd4b6948646682fa654b3367df.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 105.6 m<br>
+    <b>Score Penalización (k=100):</b> 0.3094<br>
+    <b>Coste Total (Distancia + Penalización):</b> 136.6<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d9b8080884ae2f6396812a2ed35cbb8e = L.polyline(
+                [[40.4087094, -3.703393], [40.4086742, -3.7033742]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_d9b8080884ae2f6396812a2ed35cbb8e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 4.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.4922<br>
+    <b>Coste Total (Distancia + Penalización):</b> 53.4<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_7b1e9f14265aa4c7aebd51e3c225d73a = L.polyline(
+                [[40.4086742, -3.7033742], [40.4084713, -3.7032337]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_7b1e9f14265aa4c7aebd51e3c225d73a.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 46.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.5000<br>
+    <b>Coste Total (Distancia + Penalización):</b> 96.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_53798171e2130328318bb896a32a4525 = L.polyline(
+                [[40.4084713, -3.7032337], [40.4082267, -3.7030613]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_53798171e2130328318bb896a32a4525.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 30.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.4583<br>
+    <b>Coste Total (Distancia + Penalización):</b> 76.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_472f5af8194a175a184a3cc4e4637664 = L.polyline(
+                [[40.4082267, -3.7030613], [40.4081858, -3.7030254]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_472f5af8194a175a184a3cc4e4637664.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 5.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.0511<br>
+    <b>Coste Total (Distancia + Penalización):</b> 10.6<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_3f875db0bc146d7da0fb9414a7c539f0 = L.polyline(
+                [[40.4081858, -3.7030254], [40.4077065, -3.7027028]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_3f875db0bc146d7da0fb9414a7c539f0.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 59.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.2773<br>
+    <b>Coste Total (Distancia + Penalización):</b> 87.6<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_81968593681c79d9d762469d8d6c2e78 = L.polyline(
+                [[40.4077065, -3.7027028], [40.4071807, -3.7023508]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_81968593681c79d9d762469d8d6c2e78.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 65.6 m<br>
+    <b>Score Penalización (k=100):</b> 0.2049<br>
+    <b>Coste Total (Distancia + Penalización):</b> 86.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9fbb8bc6a1242fc01187e885a86f1cb5 = L.polyline(
+                [[40.4071807, -3.7023508], [40.4063003, -3.7016347]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_9fbb8bc6a1242fc01187e885a86f1cb5.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 115.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.2500<br>
+    <b>Coste Total (Distancia + Penalización):</b> 140.2<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8e6ba40b7796be12882164c7d1504e10 = L.polyline(
+                [[40.4063003, -3.7016347], [40.4055114, -3.7009936]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_8e6ba40b7796be12882164c7d1504e10.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 103.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.5859<br>
+    <b>Coste Total (Distancia + Penalización):</b> 161.8<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d59a1a1e6009797b9eaa69bc4fd1d963 = L.polyline(
+                [[40.4055114, -3.7009936], [40.4054358, -3.7009366]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_d59a1a1e6009797b9eaa69bc4fd1d963.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 9.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.5195<br>
+    <b>Coste Total (Distancia + Penalización):</b> 61.6<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_2dbc5157b6035409f674cc5f76851f4e = L.polyline(
+                [[40.4054358, -3.7009366], [40.4053638, -3.7008824]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_2dbc5157b6035409f674cc5f76851f4e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 9.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.1094<br>
+    <b>Coste Total (Distancia + Penalización):</b> 20.2<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4ed40a1b05dc750707dbecaa1a94f4f6 = L.polyline(
+                [[40.4053638, -3.7008824], [40.4044775, -3.7002612]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_4ed40a1b05dc750707dbecaa1a94f4f6.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 111.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.5000<br>
+    <b>Coste Total (Distancia + Penalización):</b> 161.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_08f9a6d805fe1e77d5b1ee04f66e368f = L.polyline(
+                [[40.4044775, -3.7002612], [40.4044047, -3.7002102]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_08f9a6d805fe1e77d5b1ee04f66e368f.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 9.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.3438<br>
+    <b>Coste Total (Distancia + Penalización):</b> 43.5<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0edbeed12dd5d490a00cdee55dbc3d8a = L.polyline(
+                [[40.4044047, -3.7002102], [40.4043384, -3.700163]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_0edbeed12dd5d490a00cdee55dbc3d8a.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 8.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.3094<br>
+    <b>Coste Total (Distancia + Penalización):</b> 39.3<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_da005bc40f92223071c5f4b55a536ad1 = L.polyline(
+                [[40.4043384, -3.700163], [40.4038713, -3.6998301]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_da005bc40f92223071c5f4b55a536ad1.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 59.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.5352<br>
+    <b>Coste Total (Distancia + Penalización):</b> 112.6<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_77f8bd27f54175b4a9b55d5edd002a9c = L.polyline(
+                [[40.4038713, -3.6998301], [40.4038069, -3.6997862]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_77f8bd27f54175b4a9b55d5edd002a9c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 8.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.3906<br>
+    <b>Coste Total (Distancia + Penalización):</b> 47.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0e0e9236a1ebb27af20bed822a21ca48 = L.polyline(
+                [[40.4038069, -3.6997862], [40.4029477, -3.6991696]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_0e0e9236a1ebb27af20bed822a21ca48.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 108.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.6779<br>
+    <b>Coste Total (Distancia + Penalización):</b> 176.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_f55f89c2b8a466cdd9140fafb154776e = L.polyline(
+                [[40.4029477, -3.6991696], [40.4024172, -3.6988111]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_f55f89c2b8a466cdd9140fafb154776e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 66.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.3875<br>
+    <b>Coste Total (Distancia + Penalización):</b> 105.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a4123da6a57452a6ac23e71ad77eece2 = L.polyline(
+                [[40.4024172, -3.6988111], [40.4020071, -3.6985032]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_a4123da6a57452a6ac23e71ad77eece2.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 52.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.4028<br>
+    <b>Coste Total (Distancia + Penalización):</b> 92.8<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_62fc4e4dbee0c3640c987dd77acc1aa2 = L.polyline(
+                [[40.4020071, -3.6985032], [40.4020479, -3.6984657]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_62fc4e4dbee0c3640c987dd77acc1aa2.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 5.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.0096<br>
+    <b>Coste Total (Distancia + Penalización):</b> 6.5<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_18b29c95c7e72ffda0d58a040d9b7acc = L.polyline(
+                [[40.4020479, -3.6984657], [40.4020678, -3.6984474]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_18b29c95c7e72ffda0d58a040d9b7acc.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 2.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.8750<br>
+    <b>Coste Total (Distancia + Penalización):</b> 90.2<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a314f173e0734bfee926393bb730e63e = L.polyline(
+                [[40.4020678, -3.6984474], [40.4019692, -3.6983172]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_a314f173e0734bfee926393bb730e63e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 15.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.3973<br>
+    <b>Coste Total (Distancia + Penalización):</b> 55.3<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0a3b6542e82be8e9fa68b95dc1c950f8 = L.polyline(
+                [[40.4019692, -3.6983172], [40.4021522, -3.6981523]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_0a3b6542e82be8e9fa68b95dc1c950f8.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 24.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.1625<br>
+    <b>Coste Total (Distancia + Penalización):</b> 40.9<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_596f3e88a1dd2bde9858c8fc7c7eb9bc = L.polyline(
+                [[40.4021522, -3.6981523], [40.4021471, -3.6980904]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_596f3e88a1dd2bde9858c8fc7c7eb9bc.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 5.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.2305<br>
+    <b>Coste Total (Distancia + Penalización):</b> 28.3<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_7085f76e5424a6c98076211405a90040 = L.polyline(
+                [[40.4021471, -3.6980904], [40.4020104, -3.6960311]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_7085f76e5424a6c98076211405a90040.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 175.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.7917<br>
+    <b>Coste Total (Distancia + Penalización):</b> 254.2<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0ed5a7c3c651d26261a996b11537bed3 = L.polyline(
+                [[40.4020104, -3.6960311], [40.4019507, -3.6949928]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_0ed5a7c3c651d26261a996b11537bed3.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 88.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.1923<br>
+    <b>Coste Total (Distancia + Penalización):</b> 107.4<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_eb06ac31a318900ff49d798553e476da = L.polyline(
+                [[40.4019507, -3.6949928], [40.4019001, -3.693979]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_eb06ac31a318900ff49d798553e476da.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 86.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.1458<br>
+    <b>Coste Total (Distancia + Penalización):</b> 100.6<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9b5f55a0f23a55b0afa31d20e50fea1e = L.polyline(
+                [[40.4019001, -3.693979], [40.4018914, -3.6938265]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_9b5f55a0f23a55b0afa31d20e50fea1e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 12.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.5906<br>
+    <b>Coste Total (Distancia + Penalización):</b> 72.0<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_9c95b7c75238eeb5bac6f00d6072c0a7 = L.polyline(
+                [[40.4018914, -3.6938265], [40.4018826, -3.6936732]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_9c95b7c75238eeb5bac6f00d6072c0a7.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 13.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.2667<br>
+    <b>Coste Total (Distancia + Penalización):</b> 39.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b6a30df7a5b72357a489884ef1b5f5dd = L.polyline(
+                [[40.4018826, -3.6936732], [40.4018433, -3.693049]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_b6a30df7a5b72357a489884ef1b5f5dd.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 53.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.2500<br>
+    <b>Coste Total (Distancia + Penalización):</b> 78.0<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e8fa4f4a7b763b18ce92bb54eefac3ce = L.polyline(
+                [[40.4018433, -3.693049], [40.4018072, -3.6923476]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_e8fa4f4a7b763b18ce92bb54eefac3ce.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 59.5 m<br>
+    <b>Score Penalización (k=100):</b> 1.0000<br>
+    <b>Coste Total (Distancia + Penalización):</b> 159.5<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d9b5518e3fcd030c902cd5a5462441da = L.polyline(
+                [[40.4018072, -3.6923476], [40.4017353, -3.690893]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_d9b5518e3fcd030c902cd5a5462441da.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 123.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.4125<br>
+    <b>Coste Total (Distancia + Penalización):</b> 164.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_0723094a43a7d6c645be2ffd45a04817 = L.polyline(
+                [[40.4017353, -3.690893], [40.40140021308012, -3.6909252295070902]],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "orange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(feature_group_703e2051a61611397d775731069f21c2);
+        
+    
+            poly_line_0723094a43a7d6c645be2ffd45a04817.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO CORTO (DISTANCIA) ---</b><br>
+    <b>Distancia:</b> 37.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.3906<br>
+    <b>Coste Total (Distancia + Penalización):</b> 76.4<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_703e2051a61611397d775731069f21c2.addTo(map_21563474a97a1b3c925c75766b1be2c4);
+        
+    
+            var feature_group_ce97b5000dede78afaf0fff47cfbc15c = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var poly_line_a3c178131dcaa0855d336d35cea1cbd0 = L.polyline(
+                [[40.41023011475073, -3.704759679236665], [40.4103437, -3.7044274]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_a3c178131dcaa0855d336d35cea1cbd0.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 30.8 m<br>
+    <b>Score Penalización (k=100):</b> 0.5625<br>
+    <b>Coste Total (Distancia + Penalización):</b> 87.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_76419509d6745b989c1e535e191528cd = L.polyline(
+                [[40.4103437, -3.7044274], [40.4099584, -3.7041963]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_76419509d6745b989c1e535e191528cd.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 47.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.0312<br>
+    <b>Coste Total (Distancia + Penalización):</b> 50.2<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b2bea09b0a1458769abea2633ee731a7 = L.polyline(
+                [[40.4099584, -3.7041963], [40.409787, -3.7040926]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_b2bea09b0a1458769abea2633ee731a7.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 21.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.0083<br>
+    <b>Coste Total (Distancia + Penalización):</b> 21.8<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d2f0d4d092d49f41fb6bec2548ec4502 = L.polyline(
+                [[40.409787, -3.7040926], [40.4100227, -3.7033957]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_d2f0d4d092d49f41fb6bec2548ec4502.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 64.6 m<br>
+    <b>Score Penalización (k=100):</b> 0.3625<br>
+    <b>Coste Total (Distancia + Penalización):</b> 100.8<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_470598ef5a45f86774e992675e7b5d7b = L.polyline(
+                [[40.4100227, -3.7033957], [40.4090377, -3.7025752]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_470598ef5a45f86774e992675e7b5d7b.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 129.8 m<br>
+    <b>Score Penalización (k=100):</b> 0.6750<br>
+    <b>Coste Total (Distancia + Penalización):</b> 197.3<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_895941d7cf180a0704b54245f6aa0e0e = L.polyline(
+                [[40.4090377, -3.7025752], [40.4086046, -3.7021892]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_895941d7cf180a0704b54245f6aa0e0e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 58.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.8654<br>
+    <b>Coste Total (Distancia + Penalización):</b> 144.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_117bd08d7298a69104287c6e010d4b6b = L.polyline(
+                [[40.4086046, -3.7021892], [40.4081205, -3.7017567]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_117bd08d7298a69104287c6e010d4b6b.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 65.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.5243<br>
+    <b>Coste Total (Distancia + Penalización):</b> 117.5<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_dd50d90bb8e48b620c03d4ae7371c88b = L.polyline(
+                [[40.4081205, -3.7017567], [40.4078562, -3.7015286]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_dd50d90bb8e48b620c03d4ae7371c88b.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 35.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.7695<br>
+    <b>Coste Total (Distancia + Penalización):</b> 112.1<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_355bf2c671cb4d9abbc32fd3187b8da4 = L.polyline(
+                [[40.4078562, -3.7015286], [40.4076523, -3.7013483]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_355bf2c671cb4d9abbc32fd3187b8da4.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 27.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.2469<br>
+    <b>Coste Total (Distancia + Penalización):</b> 52.0<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_cce1bf95f5681e002bb0ec11b15583ab = L.polyline(
+                [[40.4076523, -3.7013483], [40.4071835, -3.7009353]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_cce1bf95f5681e002bb0ec11b15583ab.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 62.8 m<br>
+    <b>Score Penalización (k=100):</b> 0.1875<br>
+    <b>Coste Total (Distancia + Penalización):</b> 81.5<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_1f7c30c0b79437a98e55d9b553d99684 = L.polyline(
+                [[40.4071835, -3.7009353], [40.4057639, -3.7000716]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_1f7c30c0b79437a98e55d9b553d99684.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 174.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.3368<br>
+    <b>Coste Total (Distancia + Penalización):</b> 207.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_2e73d13ba9397cece077008f357288a9 = L.polyline(
+                [[40.4057639, -3.7000716], [40.405887, -3.699608]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_2e73d13ba9397cece077008f357288a9.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 41.6 m<br>
+    <b>Score Penalización (k=100):</b> 0.2634<br>
+    <b>Coste Total (Distancia + Penalización):</b> 67.9<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4c746217187099e644e94f8305639578 = L.polyline(
+                [[40.405887, -3.699608], [40.405813, -3.6995759]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_4c746217187099e644e94f8305639578.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 8.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.1424<br>
+    <b>Coste Total (Distancia + Penalización):</b> 22.9<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_66caedcf52f822f4d7a08426b4640d24 = L.polyline(
+                [[40.405813, -3.6995759], [40.4057458, -3.699548]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_66caedcf52f822f4d7a08426b4640d24.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 7.8 m<br>
+    <b>Score Penalización (k=100):</b> 0.2656<br>
+    <b>Coste Total (Distancia + Penalización):</b> 34.4<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_b3bfdc9bad97e0653138e9e1c9821023 = L.polyline(
+                [[40.4057458, -3.699548], [40.4057786, -3.6993651]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_b3bfdc9bad97e0653138e9e1c9821023.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 17.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.2833<br>
+    <b>Coste Total (Distancia + Penalización):</b> 45.6<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_ee52cb97b130316cafb77a2ebfad8f17 = L.polyline(
+                [[40.4057786, -3.6993651], [40.4049116, -3.6988539]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_ee52cb97b130316cafb77a2ebfad8f17.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 105.7 m<br>
+    <b>Score Penalización (k=100):</b> 0.3029<br>
+    <b>Coste Total (Distancia + Penalización):</b> 136.0<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_02f65dde9686a27b1e2c925d5d4e510c = L.polyline(
+                [[40.4049116, -3.6988539], [40.4049311, -3.6987809]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_02f65dde9686a27b1e2c925d5d4e510c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 6.6 m<br>
+    <b>Score Penalización (k=100):</b> 0.1375<br>
+    <b>Coste Total (Distancia + Penalización):</b> 20.3<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_aa24583bf3b84f6880237d359b7d488c = L.polyline(
+                [[40.4049311, -3.6987809], [40.4048492, -3.6987338]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_aa24583bf3b84f6880237d359b7d488c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 9.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.3417<br>
+    <b>Coste Total (Distancia + Penalización):</b> 44.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_6a618fd2a96c4e21c43c77c7bbbe4024 = L.polyline(
+                [[40.4048492, -3.6987338], [40.4047735, -3.6986876]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_6a618fd2a96c4e21c43c77c7bbbe4024.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 9.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.6031<br>
+    <b>Coste Total (Distancia + Penalización):</b> 69.6<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_c2828dedd6541be8cf8dcd61df1b574c = L.polyline(
+                [[40.4047735, -3.6986876], [40.4042309, -3.6983565]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_c2828dedd6541be8cf8dcd61df1b574c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 66.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.1375<br>
+    <b>Coste Total (Distancia + Penalización):</b> 80.3<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a6cc7b82ca76334ce7cd0a6cbf048838 = L.polyline(
+                [[40.4042309, -3.6983565], [40.4041912, -3.6983315]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_a6cc7b82ca76334ce7cd0a6cbf048838.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 4.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.2604<br>
+    <b>Coste Total (Distancia + Penalización):</b> 30.9<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_756010a4dd24148f19106c5895e85b7d = L.polyline(
+                [[40.4041912, -3.6983315], [40.4033799, -3.6978211]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_756010a4dd24148f19106c5895e85b7d.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 100.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.1469<br>
+    <b>Coste Total (Distancia + Penalización):</b> 114.7<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_4cbf1640804a74ce79c06c1f6bbb71e6 = L.polyline(
+                [[40.4033799, -3.6978211], [40.4032905, -3.6976694]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_4cbf1640804a74ce79c06c1f6bbb71e6.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 17.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.2361<br>
+    <b>Coste Total (Distancia + Penalización):</b> 40.6<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_7d35b08e0346e373dc0aedc3cc658df2 = L.polyline(
+                [[40.4032905, -3.6976694], [40.4032713, -3.6974227]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_7d35b08e0346e373dc0aedc3cc658df2.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 21.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.0688<br>
+    <b>Coste Total (Distancia + Penalización):</b> 27.9<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_5b3c4c0884957d1f96d53de12477a56c = L.polyline(
+                [[40.4032713, -3.6974227], [40.4032518, -3.6971726]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_5b3c4c0884957d1f96d53de12477a56c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 21.3 m<br>
+    <b>Score Penalización (k=100):</b> 0.1667<br>
+    <b>Coste Total (Distancia + Penalización):</b> 38.0<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_214c7dc60c9b4f4314e7dd427ee7737e = L.polyline(
+                [[40.4032518, -3.6971726], [40.4032413, -3.6970168]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_214c7dc60c9b4f4314e7dd427ee7737e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 13.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.4821<br>
+    <b>Coste Total (Distancia + Penalización):</b> 61.5<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_16e0672b3a398ecb787828a19409cdf4 = L.polyline(
+                [[40.4032413, -3.6970168], [40.4031661, -3.6958968]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_16e0672b3a398ecb787828a19409cdf4.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 95.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.5347<br>
+    <b>Coste Total (Distancia + Penalización):</b> 148.7<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_95b4d2c63820d5e29838100707f829e5 = L.polyline(
+                [[40.4031661, -3.6958968], [40.4031551, -3.6957328]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_95b4d2c63820d5e29838100707f829e5.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 13.9 m<br>
+    <b>Score Penalización (k=100):</b> 0.0455<br>
+    <b>Coste Total (Distancia + Penalización):</b> 18.5<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_453563350de30f4b0d4aeb8f136477cf = L.polyline(
+                [[40.4031551, -3.6957328], [40.40305, -3.6942091]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_453563350de30f4b0d4aeb8f136477cf.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 129.5 m<br>
+    <b>Score Penalización (k=100):</b> 0.4167<br>
+    <b>Coste Total (Distancia + Penalización):</b> 171.2<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐<br>
+    <b>Robos:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_61d9d5cc142cb90abf8ee8031310b98f = L.polyline(
+                [[40.40305, -3.6942091], [40.4030287, -3.6938772]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_61d9d5cc142cb90abf8ee8031310b98f.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 28.2 m<br>
+    <b>Score Penalización (k=100):</b> 0.3156<br>
+    <b>Coste Total (Distancia + Penalización):</b> 59.8<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_2b25198116eb6d88f32f60bc44166787 = L.polyline(
+                [[40.4030287, -3.6938772], [40.4030149, -3.6936876]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_2b25198116eb6d88f32f60bc44166787.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 16.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.2118<br>
+    <b>Coste Total (Distancia + Penalización):</b> 37.3<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> <b style='color: gray;'>? (Desc.)</b>
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_6d1d3f03ed7303457b41adfcb032720a = L.polyline(
+                [[40.4030149, -3.6936876], [40.4030045, -3.6935211]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_6d1d3f03ed7303457b41adfcb032720a.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 14.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.7000<br>
+    <b>Coste Total (Distancia + Penalización):</b> 84.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐<br>
+    <b>Peatones:</b> ⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_f954190eacda11f34fe1fe820139b4fa = L.polyline(
+                [[40.4030045, -3.6935211], [40.4029352, -3.6922319]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_f954190eacda11f34fe1fe820139b4fa.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 109.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.0357<br>
+    <b>Coste Total (Distancia + Penalización):</b> 113.0<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8dfa92c987b808a139af0f833f674c4e = L.polyline(
+                [[40.4029352, -3.6922319], [40.4029151, -3.69183]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_8dfa92c987b808a139af0f833f674c4e.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 34.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.3406<br>
+    <b>Coste Total (Distancia + Penalización):</b> 68.2<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_8c0a225de7b44a19ae399c65d6d4f28c = L.polyline(
+                [[40.4029151, -3.69183], [40.4028606, -3.6907813]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_8c0a225de7b44a19ae399c65d6d4f28c.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 89.0 m<br>
+    <b>Score Penalización (k=100):</b> 0.2305<br>
+    <b>Coste Total (Distancia + Penalización):</b> 112.1<br>
+    ---<br>
+    <b>Luminosidad:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_a63896d76c1cf32dcf09a5833d3adfc3 = L.polyline(
+                [[40.4028606, -3.6907813], [40.4027429, -3.6907912]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_a63896d76c1cf32dcf09a5833d3adfc3.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 13.1 m<br>
+    <b>Score Penalización (k=100):</b> 0.1000<br>
+    <b>Coste Total (Distancia + Penalización):</b> 23.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Contenedores:</b> ⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_89c47b3559187ec32d998d581451e8c9 = L.polyline(
+                [[40.4027429, -3.6907912], [40.4017353, -3.690893]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_89c47b3559187ec32d998d581451e8c9.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 112.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.0972<br>
+    <b>Coste Total (Distancia + Penalización):</b> 122.1<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐⭐⭐⭐<br>
+    <b>Contenedores:</b> <b style='color: gray;'>? (Desc.)</b><br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_18b1bc4e30c1f39db669569fe22d3ef0 = L.polyline(
+                [[40.4017353, -3.690893], [40.40140021308012, -3.6909252295070902]],
+                {"bubblingMouseEvents": true, "color": "#6600d3", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#6600d3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(feature_group_ce97b5000dede78afaf0fff47cfbc15c);
+        
+    
+            poly_line_18b1bc4e30c1f39db669569fe22d3ef0.bindTooltip(
+                `<div>
+                     
+    <b>--- TRAMO SEGURO ---</b><br>
+    <b>Distancia:</b> 37.4 m<br>
+    <b>Score Penalización (k=100):</b> 0.3906<br>
+    <b>Coste Total (Distancia + Penalización):</b> 76.4<br>
+    ---<br>
+    <b>Luminosidad:</b> ⭐⭐<br>
+    <b>Cámaras:</b> ⭐⭐<br>
+    <b>Contenedores:</b> ⭐⭐⭐<br>
+    <b>Robos:</b> ⭐⭐⭐<br>
+    <b>Peatones:</b> ⭐⭐⭐
+    
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            feature_group_ce97b5000dede78afaf0fff47cfbc15c.addTo(map_21563474a97a1b3c925c75766b1be2c4);
+        
+    
+            var layer_control_39826be87b841ec1fbb25d76d6377636_layers = {
+                base_layers : {
+                    "cartodbpositron" : tile_layer_cffa190ce601155e0559f3608bf48dca,
+                },
+                overlays :  {
+                    "Ruta M\u00e1s Corta (Distancia Pura)" : feature_group_703e2051a61611397d775731069f21c2,
+                    "Ruta M\u00e1s Segura (Coste Total)" : feature_group_ce97b5000dede78afaf0fff47cfbc15c,
+                },
+            };
+            let layer_control_39826be87b841ec1fbb25d76d6377636 = L.control.layers(
+                layer_control_39826be87b841ec1fbb25d76d6377636_layers.base_layers,
+                layer_control_39826be87b841ec1fbb25d76d6377636_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_21563474a97a1b3c925c75766b1be2c4);
+
+        
+</script>
+</html>

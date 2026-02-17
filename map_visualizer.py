@@ -1,6 +1,7 @@
 # map_visualizer.py
 
 import folium
+from branca.element import Element
 from cost_calculator import calcular_coste, formato_seguridad
 from config import K_PENALIZACION
 
@@ -54,10 +55,10 @@ def crear_popup_resumen(dist_corta, score_por_100m_corta,
             <li>⚖️ Score Seguridad por 100m = <b style='color: orange;'>{score_por_100m_corta:.3f}</b></li>
         </ul>
 
-        <h4>Ruta Más Segura (Azul)</h4>
+        <h4>Ruta Más Segura (Morado)</h4>
         <ul>
-            <li>📏 Distancia Total = <b style='color: blue;'>{dist_segura:.1f} m</b></li>
-            <li>⚖️ Score Seguridad por 100m = <b style='color: blue;'>{score_por_100m_segura:.3f}</b></li>
+            <li>📏 Distancia Total = <b style='color: #6600d3;'>{dist_segura:.1f} m</b></li>
+            <li>⚖️ Score Seguridad por 100m = <b style='color: #6600d3;'>{score_por_100m_segura:.3f}</b></li>
         </ul>
 
         <hr style='border: 1px solid #bdc3c7;'>
@@ -128,8 +129,23 @@ def generar_mapa_folium(g, ruta_corta, ruta_segura, origen_nodo, destino_nodo, h
     m = folium.Map(location=coords_segura[0], zoom_start=15, tiles="cartodbpositron")
 
     # Marcadores de Origen y Destino
-    folium.Marker(coords_segura[0], tooltip="Origen", icon=folium.Icon(color="green")).add_to(m)
-    folium.Marker(coords_segura[-1], tooltip="Destino", icon=folium.Icon(color="red")).add_to(m)
+    # Origen: Punto morado pequeño
+    folium.CircleMarker(
+        location=coords_segura[0],
+        radius=6,
+        color="#6600d3",
+        fill=True,
+        fill_color="#6600d3",
+        fill_opacity=1.0,
+        tooltip="Origen"
+    ).add_to(m)
+    
+    # Destino: Bandera de meta (tipo Waze)
+    folium.Marker(
+        location=coords_segura[-1],
+        tooltip="Destino",
+        icon=folium.Icon(icon="flag-checkered", prefix="fa", color="black", icon_color="white")
+    ).add_to(m)
 
     # 1. Capa para la RUTA MÁS CORTA (AMARILLA/NARANJA)
     ruta_corta_group = folium.FeatureGroup(name="Ruta Más Corta (Distancia Pura)").add_to(m)
@@ -166,22 +182,44 @@ def generar_mapa_folium(g, ruta_corta, ruta_segura, origen_nodo, destino_nodo, h
 
         folium.PolyLine(
             coords_tramo,
-            color="blue",
+            color="#6600d3",
             weight=6,
             opacity=0.8,
             tooltip=folium.Tooltip(datos_tramo["tooltip_text"], sticky=True)
         ).add_to(ruta_segura_group)
 
-    # 3. Marcador de Resumen Estadístico
-    center_lat = coords_segura[len(coords_segura) // 2][0]  # Centro de la ruta segura
-    center_lon = coords_segura[len(coords_segura) // 2][1]
+    # 3. Botón Flotante de Resumen (Sustituye al marcador)
+    
+    # CSS y HTML para el botón y el panel
+    custom_ui = f"""
+    <div id="info-container" style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; font-family: Arial, sans-serif;">
+        <!-- Panel de Información (Oculto por defecto) -->
+        <div id="info-panel" style="display: none; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2); margin-bottom: 15px; max-width: 350px; border: 1px solid #ddd;">
+            {html_resumen}
+        </div>
+        
+        <!-- Botón de Imagen -->
+        <img id="info-btn" src="assets/button_icon.png" 
+             style="width: 150px; height: auto; cursor: pointer; transition: transform 0.2s; display: block;" 
+             onclick="toggleInfo()"
+             onmouseover="this.style.transform='scale(1.1)'"
+             onmouseout="this.style.transform='scale(1.0)'"
+             title="Ver Resumen de Rutas">
+    </div>
 
-    folium.Marker(
-        location=[center_lat, center_lon],
-        tooltip="Haz clic para ver la comparativa de rutas",
-        popup=folium.Popup(html_resumen, max_width=450),
-        icon=folium.Icon(color="purple", icon='info-sign')
-    ).add_to(m)
+    <script>
+        function toggleInfo() {{
+            var panel = document.getElementById('info-panel');
+            if (panel.style.display === 'none' || panel.style.display === '') {{
+                panel.style.display = 'block';
+            }} else {{
+                panel.style.display = 'none';
+            }}
+        }}
+    </script>
+    """
+    
+    m.get_root().html.add_child(Element(custom_ui))
 
     # 4. Control de Capas
     folium.LayerControl().add_to(m)
